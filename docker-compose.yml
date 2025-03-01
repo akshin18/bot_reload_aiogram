@@ -8,14 +8,11 @@ services:
     container_name: telegram-reload-bot
     restart: unless-stopped
     volumes:
-      # Mount the external scripts directory
-      - /root/tg_reactions/:/external_scripts
-      # You can add more volumes if needed, for example to access services on the host
-      # - /var/run/docker.sock:/var/run/docker.sock  # If you need to control Docker from the bot
-    env_file:
-      - .env
+      - ./:/app
+      - ${EXTERNAL_SCRIPTS_PATH:-/path/to/external/scripts}:/external_scripts
     environment:
-      - TZ=UTC  # Set your timezone if needed
+      - TELEGRAM_API_TOKEN=${TELEGRAM_API_TOKEN}
+      - RELOAD_SCRIPT_PATH=/external_scripts/up.sh
     networks:
       - bot-network
 

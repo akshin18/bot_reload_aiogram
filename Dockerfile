@@ -1,15 +1,18 @@
-FROM python:3.11-slim
+FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install dependencies
-COPY pyproject.toml uv.lock ./
-RUN pip install --no-cache-dir pip-tools && \
-    pip-compile pyproject.toml -o requirements.txt && \
-    pip install --no-cache-dir -r requirements.txt
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    bash \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy application code
-COPY . .
+# Copy project files
+COPY pyproject.toml .
+COPY main.py .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -e .
 
 # Run the bot
 CMD ["python", "main.py"]
