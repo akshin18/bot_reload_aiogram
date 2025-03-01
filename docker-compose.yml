@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telegram-reload-bot
+    restart: unless-stopped
+    volumes:
+      # Mount the external scripts directory
+      - /root/tg_reactions/:/external_scripts
+      # You can add more volumes if needed, for example to access services on the host
+      # - /var/run/docker.sock:/var/run/docker.sock  # If you need to control Docker from the bot
+    env_file:
+      - .env
+    environment:
+      - TZ=UTC  # Set your timezone if needed
+    networks:
+      - bot-network
+
+networks:
+  bot-network:
+    driver: bridge

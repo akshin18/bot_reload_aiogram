@@ -2,6 +2,7 @@ import logging
 import subprocess
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
+from aiogram.enums import ParseMode
 import asyncio
 import os
 from dotenv import load_dotenv
@@ -17,8 +18,8 @@ API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-# Path to your bash script
-RELOAD_SCRIPT = "/path/to/your/reload_script.sh"
+# Path to your bash scripts
+RELOAD_SCRIPT = os.getenv("RELOAD_SCRIPT_PATH", "/external_scripts/up.sh")
 
 @dp.message(Command("reload"))
 async def cmd_reload(message: types.Message):
@@ -29,8 +30,8 @@ async def cmd_reload(message: types.Message):
     # Check if the user has permission (optional)
     # allowed_user_ids = [123456789]  # Replace with your Telegram user ID
     # if message.from_user.id not in allowed_user_ids:
-    #     await message.answer("You don't have permission to use this command.")
-    #     return
+    #    await message.answer("You don't have permission to use this command.")
+    #    return
 
     await message.answer("🔄 Starting reload process. Please wait...")
 
@@ -58,7 +59,7 @@ async def cmd_reload(message: types.Message):
             if stdout.strip():
                 response += f"\nOutput:\n```\n{stdout.strip()}\n```"
 
-        await message.answer(response, parse_mode="MarkdownV2")
+        await message.answer(response, parse_mode=ParseMode.MARKDOWN_V2)
 
     except Exception as e:
         await message.answer(f"❌ An error occurred: {str(e)}")
@@ -66,10 +67,14 @@ async def cmd_reload(message: types.Message):
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     """Handler for the /start command"""
-    await message.answer("Hello! I'm a bot that can reload your service.\nUse /reload to restart the service.")
+    await message.answer("Hello! I'm a bot that can reload your services.\n"
+                         "Use /reload to restart the main service.\n"
+                         "Use /tg_reload to restart the TG reactions service.")
 
 async def main():
     # Start the bot
+    await bot.delete_webhook(drop_pending_updates=True)
+    # Start polling
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
