@@ -32,11 +32,9 @@ async def cmd_reload(message: types.Message):
     await message.answer("🔄 Starting reload process. Please wait...")
     import os
 
-    files = os.listdir('/external_scripts')  # List files in the current directory
     
     await message.answer(RELOAD_SCRIPT)
-    await message.answer(files)
-
+    subprocess.run(["bash", "/external_scripts/up.sh"], check=True)
     try:
         process = subprocess.Popen(
             ["bash", RELOAD_SCRIPT],
