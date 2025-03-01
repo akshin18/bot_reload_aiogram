@@ -30,6 +30,12 @@ def escape_markdown_v2(text):
 @dp.message(Command("reload"))
 async def cmd_reload(message: types.Message):
     await message.answer("🔄 Starting reload process. Please wait...")
+    import os
+
+    files = os.listdir('/external_scripts')  # List files in the current directory
+    
+    await message.answer(RELOAD_SCRIPT)
+    await message.answer(files)
 
     try:
         process = subprocess.Popen(
