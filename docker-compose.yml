@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: telegram-reload-bot:latest
     container_name: telegram-reload-bot
     restart: unless-stopped
     volumes:
