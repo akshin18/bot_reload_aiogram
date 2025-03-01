@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/app
-      - ${EXTERNAL_SCRIPTS_PATH:-/path/to/external/scripts}:/external_scripts
+      - /root/tg_reactions:/external_scripts
     environment:
       - TELEGRAM_API_TOKEN=${TELEGRAM_API_TOKEN}
       - RELOAD_SCRIPT_PATH=/external_scripts/up.sh
